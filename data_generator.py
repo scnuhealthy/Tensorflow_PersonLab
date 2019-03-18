@@ -29,8 +29,8 @@ class DataGeneraotr(object):
         filepath = os.path.join(IMG_DIR,self.coco.imgs[img_id]['file_name'])
         img = cv2.imread(filepath)
         h, w, c = img.shape
-        # read the annotation, and get the keypoints and masks
         
+        # read the annotation, and get the keypoints and masks
         crowd_mask = np.zeros((h, w), dtype='bool')
         unannotated_mask = np.zeros((h,w), dtype='bool')
         instance_masks = []
@@ -81,7 +81,7 @@ class DataGeneraotr(object):
         # get ground truth from keypoints
         kp = [np.squeeze(k) for k in np.split(kp, kp.shape[0], axis=0)]
         kp_maps, short_offsets, mid_offsets, long_offsets = get_ground_truth(instance_masks, kp)
-        #print(img.shape,kp_maps.shape,short_offsets.shape,mid_offsets.shape,long_offsets.shape)
+        # print(img.shape,kp_maps.shape,short_offsets.shape,mid_offsets.shape,long_offsets.shape)
         # shape: img(401,401,3) kp_maps(401,401,17) short(401,401,34) medium(401,401,64) long(401,401,34) 
         self.id +=1
         return [img.astype('float32')/255.0,kp_maps.astype('float32'),short_offsets.astype('float32'),
@@ -103,9 +103,8 @@ class DataGeneraotr(object):
             
             for i in range(batch_size):
                 sample = self.get_one_sample()
-                while sample ==None:
-                    sample = self.get_one_sample()
-                #print(self.id-1)             
+                while sample ==None: # not to train the images with no instance
+                    sample = self.get_one_sample()           
                 imgs_batch[i] = sample[0]
                 kp_maps_batch[i] = sample[1]
                 short_offsets_batch[i] = sample[2]

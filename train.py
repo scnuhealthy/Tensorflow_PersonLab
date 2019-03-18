@@ -6,8 +6,10 @@ from data_generator import DataGeneraotr
 import os 
 slim = tf.contrib.slim
 
+# edit it depended on your GPU environment
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+# the function to count the number of total parameters of the network
 def count1():
     total_parameters = 0
     for variable in tf.trainable_variables():
@@ -92,6 +94,8 @@ def get_losses(ground_truth,outputs):
     return losses
 
 def train(load_pretrained_model=True,checkpoint_path=None):
+    
+    # build the placeholder
     batch_size,height,width=config.BATCH_SIZE,config.IMAGE_SHAPE[0],config.IMAGE_SHAPE[1]
     img = tf.placeholder(tf.float32,shape=[batch_size,height,width,3])
     kp_maps_true = tf.placeholder(tf.float32,shape=[batch_size,height,width,config.NUM_KP])
@@ -107,15 +111,17 @@ def train(load_pretrained_model=True,checkpoint_path=None):
     outputs = model.model(img) 
     ground_truth = [kp_maps_true, short_offsets_true, mid_offsets_true, long_offsets_true, seg_mask_true, crowd_mask, unannotated_mask, overlap_mask]
     loss = get_losses(ground_truth,outputs)
+    print("[*]\tModel Build Finished!")
+    
+    # the ResNet parameters
     exclusions = ['resnet_v2_101/logits']
     param_except_logits = slim.get_variables_to_restore(include=['resnet_v2_101'],exclude=exclusions)
-    print("[*]\tModel Build Finished!")
+    
 
     # back propagation
     with tf.name_scope('optimizer'):
         optimizer = tf.train.AdamOptimizer(config.LEARNING_RATE)
     train_step = optimizer.minimize(sum(loss)/batch_size)
-    dataset = DataGeneraotr()
     
     # initializer
     init = tf.global_variables_initializer()
@@ -135,7 +141,7 @@ def train(load_pretrained_model=True,checkpoint_path=None):
         init_fn(sess)    
         print("[*]\tPretrained Model Restored!")
         
-
+    dataset = DataGeneraotr()
     print("[*]\tDataset Build Finished!")
 
     # start training
@@ -148,10 +154,13 @@ def train(load_pretrained_model=True,checkpoint_path=None):
                          seg_mask_true:batch[5],crowd_mask:batch[6],unannotated_mask:batch[7],overlap_mask:batch[8]}
             _,train_loss = sess.run([train_step,loss],feed_dict=feed_dict)
             iters = n*config.NUM_EPOCHS_SIZE+m
+            
+            # record and output the loss 
             if iters%1==0:
                 print('[*]\titers:'+str(iters)+',loss:',train_loss)
                 print('[*]\titers:'+str(iters)+',total loss:',sum(train_loss))
         
+        # save model
         saver.save(sess,os.path.join(config.SAVE_MODEL_PATH,'model.ckpt'),n)
 
 train()

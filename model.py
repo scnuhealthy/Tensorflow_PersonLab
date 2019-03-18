@@ -42,8 +42,8 @@ def model(inputs):
                                                     64,
                                                     is_training=True,
                                                     global_pool=False,
-                                                    output_stride=8)
-    #print(net)
+                                                    output_stride=config.OUTPUT_STRIDE)
+    # print(net)
     kp_maps = tf.contrib.layers.conv2d(net,num_outputs = config.NUM_KP,
                                              kernel_size=(1,1),activation_fn=tf.nn.sigmoid,stride=1,scope='kp_maps')
     short_offsets = tf.contrib.layers.conv2d(net,num_outputs = 2*config.NUM_KP,

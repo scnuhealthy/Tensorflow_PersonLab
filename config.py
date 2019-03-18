@@ -85,7 +85,7 @@ class config:
     # Output stride of the base network (resnet101 or resnet152 in the paper)
     # [Any convolutional stride in the original network which would reduce the 
     # output stride further is replaced with a corresponding dilation rate.]
-    OUTPUT_STRIDE = 16
+    OUTPUT_STRIDE = 8
 
     # Weights for the losses applied to the keypoint maps ('heatmap'), the binary segmentation map ('seg'),
     # and the short-, mid-, and long-range offsets.

@@ -4,6 +4,8 @@ from config import config
 import model
 from data_generator import DataGeneraotr
 import numpy as np
+from skimage import io
+
 batch_size,height,width=1,config.IMAGE_SHAPE[0],config.IMAGE_SHAPE[1]
 tf_img = tf.placeholder(tf.float32,shape=[batch_size,height,width,3])
 
