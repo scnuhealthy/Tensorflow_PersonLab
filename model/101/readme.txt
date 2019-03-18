@@ -1,0 +1,1 @@
+Download the pretrained model (http://download.tensorflow.org/models/resnet_v2_101_2017_04_14.tar.gz) and put it here
