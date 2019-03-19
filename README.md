@@ -10,29 +10,35 @@ Code repo for reproducing 2018 ECCV paper [PersonLab: Person Pose Estimation and
 
 ### Result
 
-![result]()
+**Pose**
+
+![pose](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/demo_result/pose.jpg)
+
+**Segmentation**
+
+![segmentation](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/demo_result/segmentation_mask.jpg)
 
 ### Require
 
-- Python3
+* Python3
 
-- Tensorflow 1.80
-- pycocotools  2.0
-- skimage  0.13.0
-- python-opencv 3.4.1
+* Tensorflow 1.80
+* pycocotools  2.0
+* skimage  0.13.0
+* python-opencv 3.4.1
 
 
 
 ### Demo
 
-- Download the [model]()
-- python demo.py to run the demo and visualize the model result
+* Download the [model]()
+* python demo.py to run the demo and visualize the model result
 
 
 
 ### Training
 
-- Download the COCO 2017 dataset
+* Download the COCO 2017 dataset
 
   http://images.cocodataset.org/zips/train2017.zip
 
@@ -42,18 +48,20 @@ Code repo for reproducing 2018 ECCV paper [PersonLab: Person Pose Estimation and
 
   training images in `coco2017/train2017/` , val images in `coco2017/val2017/`, training annotations in `coco2017/annotations/`
 
-- Download the [Resnet101](http://download.tensorflow.org/models/resnet_v2_101_2017_04_14.tar.gz) pretrained model, put the model in `./model/101/resnet_v2_101.ckpt`
+* Download the [Resnet101](http://download.tensorflow.org/models/resnet_v2_101_2017_04_14.tar.gz) pretrained model, put the model in `./model/101/resnet_v2_101.ckpt`
 
-- Edit the [config.py](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/config.py) to set options for training, e.g. dataset position, input tensor shape, learning rate. 
-- Run the train.py script
+* Edit the [config.py](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/config.py) to set options for training, e.g. dataset position, input tensor shape, learning rate. 
+* Run the train.py script
 
 #### Evaluation
 
-- coming soon
+* coming soon
 
 ### Technical Debts
 
 The augmentation code (which is different from the procedure in the PersonLab paper) and data iterator code is heavily borrowed from [this fork](https://github.com/anatolix/keras_Realtime_Multi-Person_Pose_Estimation) of the Keras implementation of CMU's "Realtime Multi-Person Pose Estimation". (The pose plotting function is also influenced by the one in that repo.)
+
+The mask generation code and visualization code are from [this fork](https://github.com/octiapp/KerasPersonLab) of the Keras implementation of PersonLab.
 
 ### Citation
 
