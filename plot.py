@@ -6,7 +6,7 @@ import math
 from config import config
 from post_proc import get_keypoints
 
-def visualize_short_offsets(offsets, keypoint_id, centers=None, heatmaps=None, radius=config.KP_RADIUS, img=None, every=1):
+def visualize_short_offsets(offsets, keypoint_id, centers=None, heatmaps=None, radius=config.KP_RADIUS, img=None, every=1,save_path='./'):
     if centers is None and heatmaps is None:
         raise ValueError('either keypoint locations or heatmaps must be provided')
     
@@ -44,12 +44,14 @@ def visualize_short_offsets(offsets, keypoint_id, centers=None, heatmaps=None, r
     plt.figure()
     if img is not None:
         plt.imshow(img)
-    
+
+    plt.rcParams['savefig.dpi'] = 300
+    plt.rcParams['figure.dpi'] = 200    
     plt.quiver(J, I, kp_offsets[I,J,0], kp_offsets[I,J,1], color='r', angles='xy', scale_units='xy', scale=1)
-    plt.show()
+    plt.savefig('./demo_result/short_offsets.jpg',bbox_inches = 'tight')
 
 
-def visualize_mid_offsets(offsets, from_kp, to_kp, centers=None, heatmaps=None, radius=config.KP_RADIUS, img=None, every=1):
+def visualize_mid_offsets(offsets, from_kp, to_kp, centers=None, heatmaps=None, radius=config.KP_RADIUS, img=None, every=1,save_path='./'):
     if centers is None and heatmaps is None:
         raise ValueError('either keypoint locations or heatmaps must be provided')
     
@@ -91,15 +93,16 @@ def visualize_mid_offsets(offsets, from_kp, to_kp, centers=None, heatmaps=None, 
     # mask = dists <= radius
     I, J = np.nonzero(mask)
 
-    plt.figure()
     if img is not None:
         plt.imshow(img)
-    
+        
+    plt.rcParams['savefig.dpi'] = 300
+    plt.rcParams['figure.dpi'] = 200
     plt.quiver(J, I, kp_offsets[I,J,0], kp_offsets[I,J,1], color='r', angles='xy', scale_units='xy', scale=1)
-    plt.show()
+    plt.savefig(save_path+'middle_offsets.jpg',bbox_inches = 'tight')
 
 
-def visualize_long_offsets(offsets, keypoint_id, seg_mask, img=None, every=1):
+def visualize_long_offsets(offsets, keypoint_id, seg_mask, img=None, every=1,save_path='./'):
     if isinstance(keypoint_id, str):
         if not keypoint_id in config.KEYPOINTS:
             raise ValueError('{} not a valid keypoint name'.format(keypoint_id))
@@ -113,12 +116,13 @@ def visualize_long_offsets(offsets, keypoint_id, seg_mask, img=None, every=1):
     mask = np.logical_and(mask, np.mod(idx[:,:,1], every)==0)
     I, J = np.nonzero(mask)
     
-    plt.figure()
     if img is not None:
         plt.imshow(img)
     
+    plt.rcParams['savefig.dpi'] = 300
+    plt.rcParams['figure.dpi'] = 200 
     plt.quiver(J, I, kp_offsets[I,J,0], kp_offsets[I,J,1], color='r', angles='xy', scale_units='xy', scale=1)
-    plt.show()
+    plt.savefig(save_path+'long_offsets.jpg',bbox_inches = 'tight')
     
 def apply_mask(img, mask, color, alpha=0.5):
     image = img.copy()
@@ -129,13 +133,12 @@ def apply_mask(img, mask, color, alpha=0.5):
                                   image[:, :, c])
     return image
 
-def plot_instance_masks(masks, img):
+def plot_instance_masks(masks, img,save_path='./'):
     canvas = img.copy()
     for mask in masks:
         color = [np.random.uniform() for _ in range(3)]
         canvas = apply_mask(canvas, mask, color, alpha=0.75)
-    plt.figure()
-    plt.imshow(canvas)
+    plt.imsave(save_path+'instances_masks.jpg',canvas)
 
 def plot_poses(img, skeletons, save_path=None):
 
@@ -177,7 +180,5 @@ def plot_poses(img, skeletons, save_path=None):
             cv.fillConvexPoly(cur_canvas, polygon, colors[i])
             canvas = cv.addWeighted(canvas, 0.4, cur_canvas, 0.6, 0)
             
-    plt.imshow(canvas[:,:,:])
-    if save_path is not None:
-        cv.imwrite(save_path,canvas[:,:,:])
+    plt.imsave(save_path+'pose.jpg',canvas[:,:,:])
     fig = matplotlib.pyplot.gcf()

@@ -26,7 +26,7 @@ class AugmentSelection:
         return AugmentSelection(flip, degree, (x_offset,y_offset), scale)
 
     @staticmethod
-    def unrandom():
+    def unrandom(scale=1.):
         flip = False
         degree = 0.
         scale = 1.
@@ -79,20 +79,15 @@ class AugmentSelection:
 class Transformer:
 
     @staticmethod
-    def transform(img, masks, keypoints, aug=AugmentSelection.random()):
+    def transform(img, masks, keypoints, aug=AugmentSelection.random(),scale=1.0):
 
+                
         # warp picture and mask
         M = aug.affine(center=(img.shape[1]//2, img.shape[0]//2))
         cv_shape = (config.IMAGE_SHAPE[1], config.IMAGE_SHAPE[0])
 
-        # TODO: need to understand this, scale_provided[0] is height of main person divided by 368, caclulated in generate_hdf5.py
-        # print(img.shape)
-        # for i, img in enumerate(input_transform_targets):
+
         img = cv2.warpAffine(img, M, cv_shape, flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT, borderValue=(127,127,127))
-        
-        # concat = np.stack(output_transform_targets, axis=-1)
-        
-        # masks = cv2.warpAffine(masks, M, cv_shape, flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
         out_masks = np.zeros(cv_shape[::-1]+(masks.shape[-1],))
         for i in range(masks.shape[-1]):
             out_masks[:,:,i] = cv2.warpAffine(masks[:,:,i], M, cv_shape, flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT, borderValue=0)
@@ -127,4 +122,3 @@ class Transformer:
 
         # print keypoints
         return img, masks, keypoints
-

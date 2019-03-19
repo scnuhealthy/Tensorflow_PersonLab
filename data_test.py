@@ -14,7 +14,7 @@ IMG_DIR = 'E:/dataset/coco2017/val2017'
 coco = COCO(ANNO_FILE)
 img_ids = list(coco.imgs.keys())
 
-img_id = img_ids[5]
+img_id = img_ids[0]
 filepath = os.path.join(IMG_DIR,coco.imgs[img_id]['file_name'])
 img = cv2.imread(filepath)
 io.imsave('1.jpg',img)
@@ -46,7 +46,7 @@ kp = np.reshape(keypoints, (-1, config.NUM_KP, 3))
 instance_masks = np.stack(instance_masks).transpose((1,2,0))
 overlap_mask = instance_masks.sum(axis=-1) > 1
 seg_mask = np.logical_or(crowd_mask,np.sum(instance_masks,axis=-1))
-
+print(kp.shape)
 
 # Data Augmentation
 single_masks = [seg_mask, unannotated_mask, crowd_mask, overlap_mask]

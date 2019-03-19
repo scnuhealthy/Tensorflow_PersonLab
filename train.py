@@ -112,7 +112,7 @@ def train(load_pretrained_model=True,checkpoint_path=None):
     ground_truth = [kp_maps_true, short_offsets_true, mid_offsets_true, long_offsets_true, seg_mask_true, crowd_mask, unannotated_mask, overlap_mask]
     loss = get_losses(ground_truth,outputs)
     print("[*]\tModel Build Finished!")
-    
+    print(count1())
     # the ResNet parameters
     exclusions = ['resnet_v2_101/logits']
     param_except_logits = slim.get_variables_to_restore(include=['resnet_v2_101'],exclude=exclusions)
@@ -127,25 +127,34 @@ def train(load_pretrained_model=True,checkpoint_path=None):
     init = tf.global_variables_initializer()
     sess = tf.Session()
     sess.run(init)
-    
+
+    # load pretrained model
+    if load_pretrained_model:
+        init_fn = slim.assign_from_checkpoint_fn(config.PRETRAINED_MODEL_PATH,param_except_logits)
+        init_fn(sess)    
+        print("[*]\tPretrained Model Restored!")
+  
     # saver and load checkpoint
     global_vars = tf.global_variables()
     saver = tf.train.Saver(var_list = global_vars)
     if checkpoint_path!=None:
         saver.restore(sess,checkpoint_path)
         print("[*]\tSESS Restored!")
-    
-    # load pretrained model
-    if load_pretrained_model:
-        init_fn = slim.assign_from_checkpoint_fn(config.PRETRAINED_MODEL_PATH,param_except_logits)
-        init_fn(sess)    
-        print("[*]\tPretrained Model Restored!")
         
     dataset = DataGeneraotr()
     print("[*]\tDataset Build Finished!")
 
+    summ_scalar_list = []
+    summ_scalar_list.append(tf.summary.scalar("kp_map_loss", loss[0]))
+    summ_scalar_list.append(tf.summary.scalar("short_offsets_loss", loss[1]))
+    summ_scalar_list.append(tf.summary.scalar("mid_offsets_loss", loss[2]))
+    summ_scalar_list.append(tf.summary.scalar("long_offsets_loss", loss[3]))
+    summ_scalar_list.append(tf.summary.scalar("seg_loss", loss[4]))
+    summ_scalar_list.append(tf.summary.scalar("total_loss", sum(loss)))
+    summ_scalar = tf.summary.merge(summ_scalar_list)
     # start training
     print("[*]\tTraining Started!")
+    writer = tf.summary.FileWriter(config.LOG_DIR)
     for n in range(config.NUM_EPOCHS):
         for m in range(config.NUM_EPOCHS_SIZE):
             batch = next(dataset.gen_batch(batch_size=batch_size))
@@ -156,13 +165,16 @@ def train(load_pretrained_model=True,checkpoint_path=None):
             iters = n*config.NUM_EPOCHS_SIZE+m
             
             # record and output the loss 
-            if iters%1==0:
+            if iters%10==0:
+                writer.add_summary(sess.run(summ_scalar,feed_dict=feed_dict),
+                        iters)
                 print('[*]\titers:'+str(iters)+',loss:',train_loss)
                 print('[*]\titers:'+str(iters)+',total loss:',sum(train_loss))
         
         # save model
         saver.save(sess,os.path.join(config.SAVE_MODEL_PATH,'model.ckpt'),n)
 
+checkpoint_path = './model/personlab/my_model.ckpt'
 train()
 
 

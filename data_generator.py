@@ -19,6 +19,20 @@ class DataGeneraotr(object):
         self.img_ids = list(self.coco.imgs.keys())
         self.datasetlen = len(self.img_ids)
         self.id = 0
+    
+    def get_multi_scale_img(self,give_id,scale):
+        img_id = give_id
+        filepath = os.path.join(IMG_DIR,self.coco.imgs[img_id]['file_name'])
+        img = cv2.imread(filepath)
+        cv_shape = (config.IMAGE_SHAPE[1], config.IMAGE_SHAPE[0])
+        cv_shape2 = (int(cv_shape[0]*scale),int(cv_shape[1]*scale))
+        max_shape = max(img.shape[0],img.shape[1])
+        scale2 = cv_shape2[0]/max_shape
+        img = cv2.resize(img,None,fx=scale2,fy=scale2)
+        img = cv2.copyMakeBorder(img,0,cv_shape2[0]-img.shape[0],0,cv_shape2[1]-img.shape[1],cv2.BORDER_CONSTANT,value=[127,127,127])
+        return img
+
+    
     def get_one_sample(self,give_id=None,is_aug=True):
         if self.id == self.datasetlen:
             self.id = 0
@@ -29,7 +43,6 @@ class DataGeneraotr(object):
         filepath = os.path.join(IMG_DIR,self.coco.imgs[img_id]['file_name'])
         img = cv2.imread(filepath)
         h, w, c = img.shape
-        
         # read the annotation, and get the keypoints and masks
         crowd_mask = np.zeros((h, w), dtype='bool')
         unannotated_mask = np.zeros((h,w), dtype='bool')
@@ -80,6 +93,7 @@ class DataGeneraotr(object):
         
         # get ground truth from keypoints
         kp = [np.squeeze(k) for k in np.split(kp, kp.shape[0], axis=0)]
+        print(kp)
         kp_maps, short_offsets, mid_offsets, long_offsets = get_ground_truth(instance_masks, kp)
         # print(img.shape,kp_maps.shape,short_offsets.shape,mid_offsets.shape,long_offsets.shape)
         # shape: img(401,401,3) kp_maps(401,401,17) short(401,401,34) medium(401,401,64) long(401,401,34) 
@@ -120,6 +134,8 @@ class DataGeneraotr(object):
                     
         
 #plt.imshow(batch[5][2][:,:,0])        
-#dataset = DataGeneraotr()
+dataset = DataGeneraotr()
 #dataset.get_one_sample()
 #batch = next(dataset.gen_batch())
+img = dataset.get_multi_scale_img(13291,0.5)
+plt.imshow(img)  

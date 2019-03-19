@@ -42,18 +42,19 @@ def model(inputs):
                                                     64,
                                                     is_training=True,
                                                     global_pool=False,
+                                                    reuse=tf.AUTO_REUSE,
                                                     output_stride=config.OUTPUT_STRIDE)
     # print(net)
     kp_maps = tf.contrib.layers.conv2d(net,num_outputs = config.NUM_KP,
-                                             kernel_size=(1,1),activation_fn=tf.nn.sigmoid,stride=1,scope='kp_maps')
+                                             kernel_size=(1,1),activation_fn=tf.nn.sigmoid,stride=1,scope='kp_maps',reuse=tf.AUTO_REUSE)
     short_offsets = tf.contrib.layers.conv2d(net,num_outputs = 2*config.NUM_KP,
-                                             kernel_size=(1,1),activation_fn=None,stride=1,scope='short_offsets')
+                                             kernel_size=(1,1),activation_fn=None,stride=1,scope='short_offsets',reuse=tf.AUTO_REUSE)
     mid_offsets = tf.contrib.layers.conv2d(net,num_outputs = 4*config.NUM_EDGES,
-                                             kernel_size=(1,1),activation_fn=None,stride=1,scope='mid_offsets')
+                                             kernel_size=(1,1),activation_fn=None,stride=1,scope='mid_offsets',reuse=tf.AUTO_REUSE)
     long_offsets = tf.contrib.layers.conv2d(net,num_outputs = 2*config.NUM_KP,
-                                             kernel_size=(1,1),activation_fn=None,stride=1,scope='long_offsets')
+                                             kernel_size=(1,1),activation_fn=None,stride=1,scope='long_offsets',reuse=tf.AUTO_REUSE)
     seg_mask = tf.contrib.layers.conv2d(net,num_outputs = 1,
-                                             kernel_size=(1,1),activation_fn=tf.nn.sigmoid,stride=1,scope='seg_mask')
+                                             kernel_size=(1,1),activation_fn=tf.nn.sigmoid,stride=1,scope='seg_mask',reuse=tf.AUTO_REUSE)
  
     kp_maps = tf.image.resize_bilinear(kp_maps, (height,width), align_corners=True)
     short_offsets = tf.image.resize_bilinear(short_offsets, (height,width), align_corners=True)

@@ -66,7 +66,7 @@ class config:
     KP_RADIUS = 32
 
     # The threshold for extracting keypoints from hough maps.
-    PEAK_THRESH = 0.004
+    PEAK_THRESH = 0.001
 
     # Pixel distance threshold for whether to begin a new skeleton instance
     # (If another skeleton already has this keypoint within the threshold, it is discarded.)
@@ -89,6 +89,7 @@ class config:
 
     # Weights for the losses applied to the keypoint maps ('heatmap'), the binary segmentation map ('seg'),
     # and the short-, mid-, and long-range offsets.
+    '''
     LOSS_WEIGHTS = {
         'heatmap': 4,
         'seg': 2,
@@ -96,12 +97,19 @@ class config:
         'mid': 0.25,
         'long': 0.125
     }
-
+    '''
+    LOSS_WEIGHTS = {
+        'heatmap': 4,
+        'seg': 2,
+        'short': 1,
+        'mid': 0.4,
+        'long': 0.1
+    }
     # Batch_size
     BATCH_SIZE = 1
 
     # Learning Rate
-    LEARNING_RATE = 2e-5
+    LEARNING_RATE = 4e-5
 
     # Whether to keep the batchnorm weights frozen.
     BATCH_NORM_FROZEN = True
@@ -136,7 +144,9 @@ class config:
     
     #ANNO_FILE = '/home/data/hzj/annotations/person_keypoints_train2017.json'
     #IMG_DIR = '/home/data/hzj/train2017'
-
+    
+    # log dir
+    LOG_DIR = './log'
 
 class TransformationParams:
 
@@ -144,6 +154,6 @@ class TransformationParams:
     scale_prob = 1.
     scale_min = 0.8
     scale_max = 2.0
-    max_rotate_degree = 25.
-    center_perterb_max = 0.
+    max_rotate_degree = 30.
+    center_perterb_max = 20.0
     flip_prob = 0.5
