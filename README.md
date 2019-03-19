@@ -16,7 +16,7 @@ Code repo for reproducing 2018 ECCV paper [PersonLab: Person Pose Estimation and
 
 **Segmentation**
 
-![segmentation](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/demo_result/segmentation_mask.jpg)
+![segmentation](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/demo_result/instances_masks.jpg)
 
 ### Require
 
