@@ -39,7 +39,7 @@ def model(inputs):
     with slim.arg_scope(resnet_v2.resnet_arg_scope()):
           #net, end_points = resnet_v2.resnet_v2_101(inputs, 1001, is_training=False)
           net, end_points = resnet_v2.resnet_v2_101(inputs,
-                                                    64,
+                                                    2048,
                                                     is_training=True,
                                                     global_pool=False,
                                                     reuse=tf.AUTO_REUSE,

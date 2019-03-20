@@ -24,7 +24,7 @@ sess = tf.Session()
 # load the parameters
 global_vars = tf.global_variables()
 saver = tf.train.Saver(var_list = global_vars)
-checkpoint_path = './model/personlab/'+'my_model.ckpt'
+checkpoint_path = './model/personlab/'+'model.ckpt'
 saver.restore(sess,checkpoint_path)
 print("Trained Model Restored!")
 
@@ -41,8 +41,7 @@ for i in range(len(multiscale)):
     imgs_batch = np.zeros((batch_size,int(scale*height),int(scale*width),3))
     imgs_batch[0] = scale_img
 
-    # make prediction
-    
+    # make prediction  
     one_scale_output = sess.run(outputs[i],feed_dict={tf_img[i]:imgs_batch})
     scale_outputs.append([o[0] for o in one_scale_output])
 
