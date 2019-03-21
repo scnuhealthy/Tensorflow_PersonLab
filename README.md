@@ -2,7 +2,6 @@
 
 An Tensorflow implementation of PersonLab for Multi-Person Pose Estimation and Instance Segmentation. Identify every person instance, localize its facial and body keypoints, and estimate its instance segmentation mask.
 
-**All the code is being upated !!!!!**
 
 ### Introduction
 
