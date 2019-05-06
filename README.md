@@ -30,7 +30,7 @@ Code repo for reproducing 2018 ECCV paper [PersonLab: Person Pose Estimation and
 
 ### Demo
 
-* Download the [model]()
+* Download the [model](https://www.dropbox.com/sh/nvl39oxwwrzzysx/AADzVaWp4fxBjnnMdaLm8NUya?dl=0)
 * python demo.py to run the demo and visualize the model result
 
 
