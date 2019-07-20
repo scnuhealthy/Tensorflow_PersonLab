@@ -23,7 +23,7 @@ def get_ground_truth(instance_masks, all_keypoints):
 
     return kp_maps, short_offsets, mid_offsets, long_offsets
 
-# 返回的是(人数,key数,401,401) 不知道具体意思
+# return (人数,key数,401,401) 绘制heatmap的响应圆 
 def get_keypoint_discs(all_keypoints):
     map_shape = (config.IMAGE_SHAPE[0], config.IMAGE_SHAPE[1])
     discs = [[] for _ in range(len(all_keypoints))]
