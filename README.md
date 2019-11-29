@@ -52,9 +52,6 @@ Code repo for reproducing 2018 ECCV paper [PersonLab: Person Pose Estimation and
 * Edit the [config.py](https://github.com/scnuhealthy/Tensorflow_PersonLab/blob/master/config.py) to set options for training, e.g. dataset position, input tensor shape, learning rate. 
 * Run the train.py script
 
-#### Evaluation
-
-* coming soon
 
 ### Technical Debts
 
